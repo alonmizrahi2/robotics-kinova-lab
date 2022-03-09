@@ -15,4 +15,4 @@ for file in glob.glob(data_path + '/*/*.pkl'):
     with open(file, 'rb') as h:
         data.append(pickle.load(h))
 
-print(data[1][0])
+
