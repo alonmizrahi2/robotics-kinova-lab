@@ -7,7 +7,6 @@ logdir_prefix = 'lab-01'
 
 data_path = 'C:/Users/USER/Desktop/robotics_lab-master/Labs/Lab1/data' #os.path.join(os.path.dirname(os.path.realpath(__file__)), '../data')
 
-
 import pickle
 
 data = []
