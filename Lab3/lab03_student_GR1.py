@@ -203,9 +203,9 @@ def IK_NR_position(guess, target):
 
 target_1 = [0.2, 0.5, 0.1]
 guess_1 = [np.deg2rad(270),np.deg2rad(148) , np.deg2rad(148), np.deg2rad(270), np.deg2rad(140),np.deg2rad(0)]
-print(f'guess = {guess_1}')
+print(f'guess = {guess_1} , target = {target_1}')
 Q_1 = IK_NR_position(guess_1, target_1)
-print(f'Actuators Angles: {np.rad2deg(Q_1)}')
+print(f'Final Actuators Angles: {np.rad2deg(Q_1)}')
 
 target_real_FK = np.array(FK(Q_1)).astype(np.float64)
 target_real_FK = target_real_FK[:3,3].transpose()
