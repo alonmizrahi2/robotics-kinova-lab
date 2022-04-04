@@ -146,27 +146,35 @@ def angles_to_follow():
     Returns: Dictionary of the desired angels
 
     """
-    angles = { 't1': [np.deg2rad(0), np.deg2rad(344) ,np.deg2rad(75),np.deg2rad(0), np.deg2rad(300), np.deg2rad(0)],
+    angles = { 't1': [np.deg2rad(17.74), np.deg2rad(0.7) ,np.deg2rad(94.11),np.deg2rad(17.81), np.deg2rad(-10), np.deg2rad(0)],
                't2': [np.deg2rad(0), np.deg2rad(0), np.deg2rad(0), np.deg2rad(0), np.deg2rad(0),np.deg2rad(0)],
                't3': [np.deg2rad(356), np.deg2rad(21), np.deg2rad(150), np.deg2rad(272),np.deg2rad(320) ,np.deg2rad(273) ],
                't4': [np.deg2rad(270),np.deg2rad(148) , np.deg2rad(148), np.deg2rad(270), np.deg2rad(140),np.deg2rad(0) ],
                't5': [np.deg2rad(308), np.deg2rad(88),np.deg2rad(86) ,np.deg2rad(38) , np.deg2rad(358),np.deg2rad(358)],
                't6': [np.deg2rad(335), np.deg2rad(344),np.deg2rad(99) ,np.deg2rad(335) , np.deg2rad(336),np.deg2rad(233)],
-               't7': [np.deg2rad(20), np.deg2rad(333),np.deg2rad(6) ,np.deg2rad(244) , np.deg2rad(284),np.deg2rad(322)],
-               't8': [np.deg2rad(266), np.deg2rad(312),np.deg2rad(350) ,np.deg2rad(337) , np.deg2rad(252),np.deg2rad(265)],
-               't9': [np.deg2rad(255), np.deg2rad(273),np.deg2rad(284) ,np.deg2rad(357) , np.deg2rad(237),np.deg2rad(248)],
-               't10': [np.deg2rad(218), np.deg2rad(245),np.deg2rad(218) ,np.deg2rad(58) , np.deg2rad(266),np.deg2rad(318)],# [radians]
-                't11':[np.deg2rad(295), np.deg2rad(39) ,np.deg2rad(77),np.deg2rad(280), np.deg2rad(220), np.deg2rad(30)]}# [np.deg2rad(295), np.deg2rad(39) ,np.deg2rad(77),np.deg2rad(280), np.deg2rad(220), np.deg2rad(210)]} # part b
+               't7': [np.deg2rad(20), np.deg2rad(333),np.deg2rad(6) ,np.deg2rad(244) , np.deg2rad(284),np.deg2rad(322)]}
+
     return angles
 
+#  { 't1': [np.deg2rad(0), np.deg2rad(344) ,np.deg2rad(75),np.deg2rad(0), np.deg2rad(300), np.deg2rad(0)],
+#                't2': [np.deg2rad(0), np.deg2rad(0), np.deg2rad(0), np.deg2rad(0), np.deg2rad(0),np.deg2rad(0)],
+#                't3': [np.deg2rad(356), np.deg2rad(21), np.deg2rad(150), np.deg2rad(272),np.deg2rad(320) ,np.deg2rad(273) ],
+#                't4': [np.deg2rad(270),np.deg2rad(148) , np.deg2rad(148), np.deg2rad(270), np.deg2rad(140),np.deg2rad(0) ],
+#                't5': [np.deg2rad(308), np.deg2rad(88),np.deg2rad(86) ,np.deg2rad(38) , np.deg2rad(358),np.deg2rad(358)],
+#                't6': [np.deg2rad(335), np.deg2rad(344),np.deg2rad(99) ,np.deg2rad(335) , np.deg2rad(336),np.deg2rad(233)],
+#                't7': [np.deg2rad(20), np.deg2rad(333),np.deg2rad(6) ,np.deg2rad(244) , np.deg2rad(284),np.deg2rad(322)],
+#                't8': [np.deg2rad(266), np.deg2rad(312),np.deg2rad(350) ,np.deg2rad(337) , np.deg2rad(252),np.deg2rad(265)],
+#                't9': [np.deg2rad(255), np.deg2rad(273),np.deg2rad(284) ,np.deg2rad(357) , np.deg2rad(237),np.deg2rad(248)],
+#                't10': [np.deg2rad(218), np.deg2rad(245),np.deg2rad(218) ,np.deg2rad(58) , np.deg2rad(266),np.deg2rad(318)],# [radians]
+#                 't11':[np.deg2rad(295), np.deg2rad(39) ,np.deg2rad(77),np.deg2rad(280), np.deg2rad(220), np.deg2rad(30)]}# [np.deg2rad(295), np.deg2rad(39) ,np.deg2rad(77),np.deg2rad(280), np.deg2rad(220), np.deg2rad(210)]} # part b
 #####
 
 np.set_printoptions(suppress=True)
 ang = angles_to_follow()
-theta_list = [ang['t1'],ang['t2'],ang['t3'],ang['t4'],ang['t5'],ang['t6'],ang['t7'],ang['t8'],ang['t9'],ang['t10'],ang['t11']]
+theta_list = [ang['t1'],ang['t2'],ang['t3'],ang['t4'],ang['t5'],ang['t6'],ang['t7']]#,ang['t8'],ang['t9'],ang['t10'],ang['t11']]
 
 # part a
-for i in range(10):
+for i in range(7):
 
     A1=FK(theta_list[i])
     a1 = np.array(A1).astype(np.float32)
@@ -183,31 +191,31 @@ for i in range(10):
 
 # part b
 
-A2 =FK(ang['t11'])
-print("Actuators Angles")
-print(np.rad2deg(theta_list[10]))
-print("Homogeneous Matrices T_ee")
-a2 = np.array(A2).astype(np.float32)
-a2 = np.round(a2,3)
-a2 = Array(a2)
-pprint(a2)
-print("Homogeneous Matrices T_ee*")
-Tee1 = ([0,1,0,0.41],[1,0,0,0],[0,0,-1,0],[0,0,0,1])
-Tee1 = Array(Tee1)
-pprint(Tee1)
-print("Position and Euler Angles")
-v2 = xyz_euler(A2)
-v2 = np.round(v2, 2)
-print(v2)
-print("Position and Euler Angles *")
-v3 = ([0.41, 0, 0, 180, 0, 90])
-print(v3)
+# A2 =FK(ang['t11'])
+# print("Actuators Angles")
+# print(np.rad2deg(theta_list[10]))
+# print("Homogeneous Matrices T_ee")
+# a2 = np.array(A2).astype(np.float32)
+# a2 = np.round(a2,3)
+# a2 = Array(a2)
+# pprint(a2)
+# print("Homogeneous Matrices T_ee*")
+# Tee1 = ([0,1,0,0.41],[1,0,0,0],[0,0,-1,0],[0,0,0,1])
+# Tee1 = Array(Tee1)
+# pprint(Tee1)
+# print("Position and Euler Angles")
+# v2 = xyz_euler(A2)
+# v2 = np.round(v2, 2)
+# print(v2)
+# print("Position and Euler Angles *")
+# v3 = ([0.41, 0, 0, 180, 0, 90])
+# print(v3)
 
 # error
 # err1 = np.dot(Tee1, a2)
-mse = (np.square(Tee1 - a2)).mean(axis=None)
-mse = round(mse,4)
-print("Mean Squere Error")
-print(f'{mse*100}[%]')
+# mse = (np.square(Tee1 - a2)).mean(axis=None)
+# mse = round(mse,4)
+# print("Mean Squere Error")
+# print(f'{mse*100}[%]')
 # Mean Squere Error
 # 2.54[%]
