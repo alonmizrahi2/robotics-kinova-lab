@@ -1,6 +1,5 @@
 import numpy as np
 
-
 #######################
 ######## Lab 4 ########
 #######################
@@ -20,7 +19,6 @@ def traj_gen_config(q1, q2, t, Tf):
     
     B.C: q(0) = q1; q_dot(0) = 0; q(Tf) = q2; q_dot(Tf) = 0; 
     """
-
     a0 = q1
     a1 = 0.
     a2 = (3 / (Tf ** 2)) * (q2 - q1)
@@ -48,23 +46,18 @@ def traj_gen_task(x_s, x_g, t, Tf):
                 --> x, dx, ddx --> 3 object of np.array((6,))
 
     """
-
-    # a0 = x_s
-    # a1 = 0.
-    # a2 = (3 / (Tf ** 2)) * (x_g - x_s)
-    # a3 = (2 / (Tf ** 3)) * (x_s - x_g)
-    # x = a0 + a1 * t + a2 * (t ** 2) + a3 * (t ** 3)
-    # dx = a1 + 2 * a2 * t + 3 * a3 * (t ** 2)
-    # ddx = 2 * a2 + 6 * a3 * t
+    a0 = x_s
+    a1 = 0.
+    a2 = (3 / (Tf ** 2)) * (x_g - x_s)
+    a3 = (2 / (Tf ** 3)) * (x_s - x_g)
+    x = a0 + a1 * t + a2 * (t ** 2) + a3 * (t ** 3)
+    dx = a1 + 2 * a2 * t + 3 * a3 * (t ** 2)
+    ddx = 2 * a2 + 6 * a3 * t
 
     '''
     linear: a0 = x_s ; a1 = (x_g - x_s) / Tf ; x = a0 + a1 * t ; dx = a1 ; ddx = 0;
     '''
-    a0 = x_s
-    a1 = (x_g - x_s) / Tf
-    x = a0 + a1 * t
-    dx = a1
-    ddx = 0
+
     return x, dx, ddx
 
 
