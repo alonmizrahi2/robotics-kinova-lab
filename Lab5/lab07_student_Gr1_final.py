@@ -12,11 +12,11 @@ def calculate_error(t_curr, R_curr, target_feature_t, target_feature_R, translat
             R_input, 3x3 matrix
     Output: Error, [t_err, R_err], 6x1
     '''
+
     t_del = t_curr - target_feature_t
-    Rot_Err_Mat = np.dot(R_curr, np.transpose(target_feature_R))
-    vec = R.from_matrix(Rot_Err_Mat).as_rotvec()
-    theta = np.linalg.norm(vec)
-    u = vec / (theta + 1e-5)
+    Rot_Err_Mat = np.dot(target_feature_R,  np.transpose(R_curr))
+    Rot_Err_Mat_2 = np.vstack((np.hstack((Rot_Err_Mat, np.zeros((3, 1)))), np.array([0, 0, 0, 1])))
+    (theta, u, _) = transformations.rotation_from_matrix(Rot_Err_Mat_2)
 
     # see paragraph above Eq.13
     # of Chaumette, Francois, and Seth Hutchinson. "Visual servo control. I. Basic approaches."
@@ -44,11 +44,11 @@ def feature_jacobian(t_curr, R_curr, target_feature_R):
     '''
     I = np.identity(3)
     S_Pcur = skew(t_curr)
-    Rot_Err_Mat = np.dot(R_curr, np.transpose(target_feature_R))
-    vec = R.from_matrix(Rot_Err_Mat).as_rotvec()
-    theta = np.linalg.norm(vec)
-    u = vec / (theta + 1e-5)
-    # u = R.from_matrix(Rot_Err_Mat).as_rotvec()
+
+    Rot_Err_Mat = np.dot(target_feature_R, np.transpose(R_curr))
+    Rot_Err_Mat_2 = np.vstack((np.hstack((Rot_Err_Mat, np.zeros((3, 1)))), np.array([0, 0, 0, 1])))
+    (theta, u, _) = transformations.rotation_from_matrix(Rot_Err_Mat_2)
+    
     j_tu = I - (theta/2) * skew(u) + (1 - (np.sinc(theta) / ((np.sinc(theta / 2)) ** 2))) * np.dot(skew(u), skew(u))
     L_out = np.vstack((np.hstack((-I, S_Pcur)), np.hstack((np.zeros([3,3]), j_tu))))
 
