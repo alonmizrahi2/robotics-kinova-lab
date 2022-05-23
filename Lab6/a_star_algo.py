@@ -6,7 +6,6 @@ See Wikipedia article (https://en.wikipedia.org/wiki/A*_search_algorithm)
 """
 
 import math
-
 import matplotlib.pyplot as plt
 
 show_animation = True
