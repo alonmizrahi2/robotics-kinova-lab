@@ -41,19 +41,6 @@ class RRTStar(RRT):
                  connect_circle_dist=50.0,
                  search_until_max_iter=False,
                  robot_radius=0.0):
-
-    # def __init__(self,
-    #             start,
-    #             goal,
-    #             obstacle_list,
-    #             rand_area,
-    #             expand_dis=30.0,
-    #             path_resolution=1.0,
-    #             goal_sample_rate=20,
-    #             max_iter=300,
-    #             connect_circle_dist=50.0,
-    #             search_until_max_iter=False,
-    #             robot_radius=0.0):
         """
         Setting Parameter
         start:Start Position [x,y]
@@ -261,11 +248,11 @@ def main():
         (5, 5, 1),
         (3, 6, 2),
         (3, 8, 2),
-        # (3, 10, 2),
-        # (7, 5, 2),
-        # (9, 5, 2),
-        # (8, 10, 1),
-        # (6, 12, 1),
+        (3, 10, 2),
+        (7, 5, 2),
+        (9, 5, 2),
+        (8, 10, 1),
+        (6, 12, 1),
     ]  # [x,y,size(radius)]
 
     # Set Initial parameters

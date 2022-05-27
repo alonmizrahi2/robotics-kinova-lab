@@ -1,8 +1,12 @@
 # Import required packages
-# from rrt_algo import *
+# from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
 import numpy as np
 
+
+
+
+########## car lab ##############
 
 def planner(Pc, Pg, O, B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
     """
@@ -65,7 +69,6 @@ def planner(Pc, Pg, O, B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
             plt.plot([x for (x, y) in path], [y for (x, y) in path], 'r--')
             plt.grid(True)
             plt.pause(0.01)
-            plt.show() # comment
     path1 = np.round(path[::-1], 3)
     # print(path)
     return path1
@@ -121,3 +124,5 @@ if __name__ == '__main__':
     # (p_i_car, alpha) = steering_angle(A_robot_cam, A_base_cam, p_i_base)
     
     # print(p_i_car, alpha)
+
+################### end car lab ########################
