@@ -87,9 +87,10 @@ def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=
         grid_size = 0.5  # potential grid size [m]
         robot_radius = 5.0  # robot radius [m]
 
-        ox = [15.0, 5.0, 20.0, 25.0]  # obstacle x position list [m]
-        oy = [25.0, 15.0, 26.0, 25.0]  # obstacle y position list [m]
-
+        # ox = [15.0, 20.0, 25.0]  # obstacle x position list [m]
+        # oy = [25.0, 26.0, 25.0]  # obstacle y position list [m]
+        ox = [0] # obstacle x position list [m]
+        oy = [10]
         if show_animation:
             plt.grid(True)
             plt.axis("equal")
@@ -165,7 +166,7 @@ if __name__ == '__main__':
     start=[0, 10]
     goal=[30, 30]
     rand_area=[-0.05, 0.65]
-    planner_type = 4
+    planner_type = 3
     pp = planner(start, goal, obstacleList, planner_type, rand_area, delta=0.02)
     pp2 = np.round(pp,3)
 
