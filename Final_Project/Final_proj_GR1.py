@@ -1,6 +1,7 @@
 # Import required packages
-# from rrt_algo_GR1 import *
+from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
+from potential_algo_GR1 import *
 import numpy as np
 
 
@@ -8,7 +9,7 @@ import numpy as np
 
 ########## car lab ##############
 
-def planner(Pc, Pg, O, B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
+def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
     """
     Args:
         Pc: start point (x_s, y_s) --> list: len=2 OR np.array(): shape=(2,)
@@ -22,56 +23,97 @@ def planner(Pc, Pg, O, B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
         path: [[x_1, y_1], [x_2, y_2], ..., [x_M, y_M]] --> List of lists of size 2 (x, y).
                 Important: Make sure that your output 'path' is in the right order (from start to goal)
     """
-
     print("start " + __file__)
 
+    # RRT == 1, RRT* == 2, POTENTIAL == 3, STRAIGHT LINE == 4
+
+    if(planner_type == 1):
     # ====Search Path with RRT====
 
     # # Set Initial parameters -rrt regular
-    # rrt = RRT(
-    #     start=Pc, goal=Pg, rand_area=B,
-    #     obstacle_list=O,
-    #     path_resolution=delta,
-    #     # play_area=[0, 10, 0, 14]
-    #     robot_radius=0.005
-    #     )
-    # path = rrt.planning(animation=True) # True or False
+        rrt = RRT(
+            start=Pc, goal=Pg, rand_area=B,
+            obstacle_list=O,
+            path_resolution=delta,
+            # play_area=[0, 10, 0, 14]
+            robot_radius=0.005
+            )
+        path = rrt.planning(animation=True) # True or False
 
-    # if path is None:
-    #     print("Cannot find path")
-    # else:
-    #     print("found path!!")
+        if path is None:
+            print("Cannot find path")
+        else:
+            print("found path!!")
 
-    #     # Draw final path
-    #     if show_animation:
-    #         rrt.draw_graph()
-    #         plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
-    #         plt.grid(True)
-    #         plt.show()
-    #         # save the fig ??----------------------------------
+            # Draw final path
+            if show_animation:
+                rrt.draw_graph()
+                plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
+                plt.grid(True)
+                plt.pause(0.01)
+                # plt.show()
+                # save the fig ??
 
+
+    elif(planner_type == 2):
     # Set Initial parameters - rrt star
-    rrt_star = RRTStar(
-        start=Pc, goal=Pg, rand_area=B,
-        obstacle_list=O,
-        expand_dis=0.05,
-        robot_radius=0.003)
-    path = rrt_star.planning(animation=show_animation)
+        rrt_star = RRTStar(
+            start=Pc, goal=Pg, rand_area=B,
+            obstacle_list=O,
+            expand_dis=0.05,
+            robot_radius=0.003)
+        path = rrt_star.planning(animation=show_animation)
 
-    if path is None:
-        print("Cannot find path")
-    else:
-        print("found path!!")
+        if path is None:
+            print("Cannot find path")
+        else:
+            print("found path!!")
 
-        # Draw final path
+            # Draw final path
+            if show_animation:
+                rrt_star.draw_graph()
+                plt.plot([x for (x, y) in path], [y for (x, y) in path], 'r--')
+                plt.grid(True)
+                plt.pause(0.01)
+
+
+    elif(planner_type == 3):
+        print("potential_field_planning start")
+
+        [sx,sy] = Pc  # start x position [m]
+        # sy = 10.0  # start y positon [m]
+        [gx,gy] = Pg  # goal x position [m]
+        # gy = 30.0  # goal y position [m]
+        grid_size = 0.5  # potential grid size [m]
+        robot_radius = 5.0  # robot radius [m]
+
+        ox = [15.0, 5.0, 20.0, 25.0]  # obstacle x position list [m]
+        oy = [25.0, 15.0, 26.0, 25.0]  # obstacle y position list [m]
+
         if show_animation:
-            rrt_star.draw_graph()
-            plt.plot([x for (x, y) in path], [y for (x, y) in path], 'r--')
             plt.grid(True)
-            plt.pause(0.01)
-    path1 = np.round(path[::-1], 3)
-    # print(path)
-    return path1
+            plt.axis("equal")
+
+        # path generation
+        _, _ = potential_field_planning(
+            sx, sy, gx, gy, ox, oy, grid_size, robot_radius)
+
+        if show_animation:
+            plt.show()
+
+    elif(planner_type == 4):
+        sections = 4 
+        path =[]
+        xs = (Pg[0] - Pc[0]) / sections
+        ys = (Pg[1] - Pc[1]) / sections
+        for i in range(sections):
+            path.append([[Pc[0] + xs, Pc[1] + ys]])
+            Pc[0] = Pc[0] + xs
+            Pc[1] = Pc[1] + ys
+        path = np.array(path[::-1])
+        # path.draw_graph()
+        
+    return path[::-1]
 
 
 def steering_angle(A_cam_base, A_cam_robot, p_i_base):
@@ -95,17 +137,37 @@ def steering_angle(A_cam_base, A_cam_robot, p_i_base):
     alpha = np.round(np.rad2deg(np.arctan2(p_i_car_f[0], p_i_car_f[1])), 2)
     return (p_i_car_f, alpha)
 
+def attack_point_calc(p_d,delta = 15):
+    #notice!! orientation need to be defined as global parameter -1/1
+    orientation =0
+    p_delta = (orientation*delta,0)
+    p_attack = p_d - p_delta
+    return p_attack
 
+def gole_point(p_d,p_corrent,multiple_size = 10):
+    #notice!! orientation need to be defined as global parameter -1/1
+    orientation =0
+    p_delta = (p_d - p_corrent)*multiple_size*orientation
+    gole_point = p_corrent + p_delta
+    return gole_point
+
+
+def static_target (p_previous , pcur ,  max_error = 5):
+    #notice!! at the end (or start) of the main code we must define the p_previous of the target
+    bool_parameter = True
+    if abs(pcur[0]-p_previous[0]) > max_error or abs(pcur[1]-p_previous[1]) > max_error:
+        bool_parameter = False       
+    return bool_parameter
 
 if __name__ == '__main__':
     
     obstacleList = [(0.1, 0.1, 0.04), (0.1, 0.3, 0.04), (0.4, 0.6, 0.07)]  # [x, y, radius]
-    start=[0, 0]
-    goal=[0.09, 0.4]
+    start=[0, 10]
+    goal=[30, 30]
     rand_area=[-0.05, 0.65]
-
-    pp = planner(start, goal, obstacleList, rand_area, delta=0.02)
-    pp2 = np.round(pp[::-1],3)
+    planner_type = 4
+    pp = planner(start, goal, obstacleList, planner_type, rand_area, delta=0.02)
+    pp2 = np.round(pp,3)
 
     print(pp2)
 
