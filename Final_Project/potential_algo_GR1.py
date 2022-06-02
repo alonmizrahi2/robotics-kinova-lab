@@ -174,8 +174,8 @@ def main():
     grid_size = 0.5  # potential grid size [m]
     robot_radius = 5.0  # robot radius [m]
 
-    ox = [15.0, 5.0, 20.0, 25.0]  # obstacle x position list [m]
-    oy = [25.0, 15.0, 26.0, 25.0]  # obstacle y position list [m]
+    ox = [25.0, 25.0, 25.0,25.0, 25.0, 25.0]  # obstacle x position list [m]
+    oy = [25.0, 32.5, 35.0, 27.5, 22.5, 30.0]  # obstacle y position list [m]
 
     if show_animation:
         plt.grid(True)
