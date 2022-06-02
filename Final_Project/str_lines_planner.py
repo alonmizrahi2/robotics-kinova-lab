@@ -41,7 +41,9 @@ def strLines_fun(x_ee, x_goal, obs, delta=0.02):
 
     while dis(a, loc) > e:
 
-        if(loc[0] <= a[0] + 0.05): # Case 1
+        if(dis(loc, (a + np.array([0.15, 0]))) < 0.02): # Case 0
+            loc = loc + 0.05*(a + np.array([0.15, 0]) + loc) 
+        elif(loc[0] <= a[0] + 0.05): # Case 1
             loc = loc + step*(a - loc)
         elif(loc[0] > a[0] + 0.05 and loc[1] > a[1] + 0.1): # Case 2
             t = np.array(a - loc + np.array([0, 0.1]))
@@ -65,7 +67,7 @@ def strLines_fun(x_ee, x_goal, obs, delta=0.02):
 
 if __name__ == '__main__':
     obs_ = [0]
-    start=[0.0, 0.7]
+    start=[0.86, 0.7]
     goal=[0.7, 0.7]
 
     pp = strLines_fun(start, goal, obs_, delta=0.02)
