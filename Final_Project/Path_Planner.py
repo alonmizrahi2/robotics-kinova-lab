@@ -2,12 +2,8 @@
 from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
 from potential_algo_GR1 import *
+from str_lines_planner import *
 import numpy as np
-
-
-
-
-########## car lab ##############
 
 def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
     """
@@ -113,9 +109,17 @@ def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=
             Pc[1] = Pc[1] + ys
         path = np.array(path[::-1])
         # path.draw_graph()
+
+    elif(planner_type == 5):
+        
+        path =[]
+        obs = [0]
+        
+        path = strLines_fun(Pc, Pg, obs, delta=0.02)
+        path = np.array(path[::-1])
+    
         
     return path[::-1]
-
 
 def steering_angle(A_cam_base, A_cam_robot, p_i_base):
     """
@@ -138,54 +142,33 @@ def steering_angle(A_cam_base, A_cam_robot, p_i_base):
     alpha = np.round(np.rad2deg(np.arctan2(p_i_car_f[0], p_i_car_f[1])), 2)
     return (p_i_car_f, alpha)
 
-def attack_point_calc(p_d,delta = 15):
-    #notice!! orientation need to be defined as global parameter -1/1
-    orientation = 0
-    p_delta = (orientation*delta,0)
+def attack_point_calc(p_d,delta = 0.15):
+    #notice!! side need to be defined as global parameter -1/1
+    side = 1
+    p_delta = np.array([side*delta,0])
     p_attack = p_d - p_delta
     return p_attack
 
-def gole_point(p_d,p_corrent,multiple_size = 10):
-    #notice!! orientation need to be defined as global parameter -1/1
-    orientation =0
-    p_delta = (p_d - p_corrent)*multiple_size*orientation
-    gole_point = p_corrent + p_delta
-    return gole_point
+def goal_point(p_d ,p_corrent, step_size, side):
+
+    side = 1
+    p_delta = (p_d - p_corrent)*step_size*side
+    goal_point = p_corrent + p_delta
+    return goal_point
 
 
-def static_target (p_previous , pcur ,  max_error = 5):
+def static_target(p_previous , pcur ,  max_error = 0.3):
     #notice!! at the end (or start) of the main code we must define the p_previous of the target
     bool_parameter = True
     if abs(pcur[0]-p_previous[0]) > max_error or abs(pcur[1]-p_previous[1]) > max_error:
         bool_parameter = False       
     return bool_parameter
 
+
 if __name__ == '__main__':
-    
-    obstacleList = [(0.1, 0.1, 0.04), (0.1, 0.3, 0.04), (0.4, 0.6, 0.07)]  # [x, y, radius]
-    start=[0, 10]
-    goal=[30, 30]
-    rand_area=[-0.05, 0.65]
-    planner_type = 3
-    pp = planner(start, goal, obstacleList, planner_type, rand_area, delta=0.02)
-    pp2 = np.round(pp,3)
+    obs_ = [0]
+    start=[0.1, 0.1]
+    goal=[0.7, 0.7]
+    planner_type = 5
 
-    print(pp2)
-
-    # for check
-    # A_robot_cam = np.array([[-0.1614, -0.6982, 0.6975, 0.412],
-    #                         [0.9769, -0.0127, 0.2133, 0.218],
-    #                         [-0.1400, 0.7158, 0.6841, 0.797],
-    #                         [0., 0., 0., 1.]])
-    # A_base_cam = np.array([[-0.7537, 0.6208, 0.2157, 0.112],
-    #                        [-0.1910, -0.5292, 0.8246, 0.801],
-    #                        [0.6261, 0.5783, 0.5230, 0.797],
-    #                        [0., 0., 0., 1.]])
-    # p_i_base = np.array([0.5, 1.1, 0.]) 
-
-    # # p_i_car = ([0,0])
-    # (p_i_car, alpha) = steering_angle(A_robot_cam, A_base_cam, p_i_base)
-    
-    # print(p_i_car, alpha)
-
-################### end car lab ########################
+    pp = planner(start, goal, obs_,planner_type , B=[-0.05, 0.65] , delta=0.02)

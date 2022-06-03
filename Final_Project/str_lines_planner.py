@@ -26,7 +26,7 @@ def strLines_fun(x_ee, x_goal, obs, delta=0.02):
     a = np.array(x_goal) # goal point
     b = np.array(x_ee) # start point
     
-    e = 0.05 # error in the end location
+    e = 0.03 # error in the end location
     step = 0.5 # step size 
     path = np.array([b]) 
     
@@ -67,7 +67,7 @@ def strLines_fun(x_ee, x_goal, obs, delta=0.02):
 
 if __name__ == '__main__':
     obs_ = [0]
-    start=[0.86, 0.7]
+    start=[0.1, 0.1]
     goal=[0.7, 0.7]
 
     pp = strLines_fun(start, goal, obs_, delta=0.02)

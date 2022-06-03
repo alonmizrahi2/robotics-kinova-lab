@@ -127,6 +127,7 @@ if __name__ == "__main__":
                     break
             i += 1
             cntrlr.motor_command(1, 1)
+            
 
         print("Reached goal!! ")
         cntrlr.motor_command(1., 1.)
