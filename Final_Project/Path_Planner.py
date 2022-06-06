@@ -1,9 +1,19 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+import math
+from scipy.spatial.transform import Rotation as R
+import sys, os
+
 # Import required packages
 from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
 from potential_algo_GR1 import *
 from str_lines_planner import *
-import numpy as np
+from car_control import Controller
+
+from aruco_module import aruco_track
+import cv2
 
 def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
     """
@@ -164,8 +174,112 @@ def static_target(p_previous , pcur ,  max_error = 0.3):
         bool_parameter = False       
     return bool_parameter
 
+def close_to_disk(p_d,p_o,tol = 0.03):
+    d = np.linalg.norm(p_o,p_d)
+    if d > tol:
+        return False
+    else:
+        return True
+
+def GoToNextPoint(point, tolerance = 0.01):
+    
+    next_ = [10e2, 10e2]
+    while np.linalg.norm(next_[:2]) > tolerance:
+        t_curr, R_curr, ids = tracker.track()
+        try:
+            phi, next_, curr = camera_data(t_curr, R_curr, ids, next_goal) # another func - from my next point to phi
+            # executed_path.append(list(curr))
+            print(f' Phi: {round(phi)}, error: {next_[:2]}\n Distance: {np.linalg.norm(next_[:2])}')
+        except:
+            continue
+        if np.linalg.norm(next_) <= tolerance:
+            cntrlr.motor_command(1, 1)
+            continue
+        left, right = calc_motor_command(phi)
+        cntrlr.motor_command(-left, -right)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    print("Reached next point")
+    cntrlr.motor_command(1., 1.)
+
+def save(saver):
+    logdir_prefix = 'lab-05'
+
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../Lab5/data')
+
+    if not (os.path.exists(data_path)):
+        os.makedirs(data_path)
+
+    logdir = logdir_prefix + '_' + time.strftime("%d-%m-%Y_%H-%M-%S")
+    logdir = os.path.join(data_path, logdir)
+    if not (os.path.exists(logdir)):
+        os.makedirs(logdir)
+
+    print("\n\n\nLOGGING TO: ", logdir, "\n\n\n")
+
+    import pickle
+    with open(logdir + '/data' + '.pkl', 'wb') as h:
+        pickle.dump(saver, h)
+
+def calc_motor_command(angle):
+    '''
+
+    Args:
+        angle: steering angle from car pose to target pose
+
+    Returns:
+        left and right motor command to align with the steering angle
+    '''
+    x = angle / 180.
+    if x <= 0:
+        right = 1.
+        left = -2 * x + 1
+    else:
+        left = 1.
+        right = 2 * x + 1
+    left = math.copysign(1, left) - left * 0.5
+    right = math.copysign(1, right) - right * 0.5
+    return -left, -right
+
+def field_status():
+    '''
+    w.r.t camera frame
+    Returns:
+
+    '''
+    t_curr, R_curr, ids = tracker.track()
+    try:
+        t_curr, R_curr, ids = t_curr.squeeze(), R_curr.squeeze(), ids.squeeze()
+        trans, rot, homo = {}, {}, {}
+        for i in range(len(ids)):
+            trans[ids[i]] = t_curr[i, :]
+            rot[ids[i]] = R.from_rotvec(R_curr[i, :]).as_matrix()
+            homo[ids[i]] = np.vstack((np.hstack((rot[ids[i]], trans[ids[i]].reshape(-1, 1))), np.array([[0, 0, 0, 1]])))
+        # Note that everything is with respect to the camera frame!
+        p_r = np.linalg.inv(homo[axes_user_ID]) @ homo[car_ID]
+        p_o = np.linalg.inv(homo[axes_user_ID]) @ homo[opponent_ID]
+        p_d = np.linalg.inv(homo[axes_user_ID]) @ homo[disc_ID]
+        return p_r, p_o, p_d
+
+    except:
+        print('Error! Cannot detect frames')
+        cntrlr.motor_command(1., 1.)
 
 if __name__ == '__main__':
+
+    tracker = aruco_track()
+
+    axes_user_ID = int(input('Enter axes user ID:   '))
+    car_ID = int(input('Enter car ID:   '))
+    opponent_ID = int(input('Enter opponent ID:   '))
+    disc_ID = int(input('Enter disc ID:   '))
+
+    cntrlr = Controller(car_ID)  # input car ID
+    cntrlr.connect()
+    time.sleep(1)
+    cntrlr.motor_command(1., 1.)  # Don't move!
+
     obs_ = [0]
     start=[0.1, 0.1]
     goal=[0.7, 0.7]

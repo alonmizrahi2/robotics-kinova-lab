@@ -1,19 +1,49 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import time
+import math
+from scipy.spatial.transform import Rotation as R
+import sys, os
+
+# Import required packages
+
+from car_control import Controller
+
+from aruco_module import aruco_track
+import cv2
+
 from ast import While
 from re import A
 from Path_Planner import *
 from final_proj import *
 
+sys.path.insert(0, r'../common/Aruco_Tracker-master')
+sys.path.insert(0, r'../Lab5')
 
 ####################
 #### main loop #####
 ####################
 if __name__ == "__main__":
 
-    #### merge with lab code ####
+
+
+    tracker = aruco_track()
+
+    axes_user_ID = int(input('Enter axes user ID:   '))
+    car_ID = int(input('Enter car ID:   '))
+    opponent_ID = int(input('Enter opponent ID:   '))
+    disc_ID = int(input('Enter disc ID:   '))
+    side = int(input('Enter opponent side:   '))
+    planner_type = int(input('Enter planner_type:   '))
+    # side = 1  # +x = 1 # -x = -1
+    # planner_type = 1
+    cntrlr = Controller(car_ID)  # input car ID
+    cntrlr.connect()
+    time.sleep(1)
+    cntrlr.motor_command(1., 1.)  # Don't move!
 
     #### Constants ####
-    side = 1  # +x = 1 # -x = -1
-    planner_type = 1
+
     obs = [] # obstacles option
 
     ### all the units in meters [m]
@@ -51,7 +81,7 @@ if __name__ == "__main__":
             for point in B_path:
                 GoToNextPoint(point)
                 p_rival, p_own, p_disk = field_status()
-                if close_to_disk(p_disk, p_own, tol)  is False:
+                if close_to_disk(p_disk, p_own, tol = 0.03)  is False:
                     to_goal = False
                     GoToNextPoint((p_own[0] - side*1,p_own[1]))
                     break
