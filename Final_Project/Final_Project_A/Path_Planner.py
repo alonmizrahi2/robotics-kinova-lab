@@ -8,7 +8,7 @@ import sys, os
 # Import required packages
 from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
-from potential_algo_GR1 import *
+from alon_poten_planner import *
 from str_lines_planner import *
 from car_control import Controller
 
@@ -85,28 +85,8 @@ def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=
 
     elif(planner_type == 3):
         print("potential_field_planning start")
-
-        [sx,sy] = Pc  # start x position [m]
-        # sy = 10.0  # start y positon [m]
-        [gx,gy] = Pg  # goal x position [m]
-        # gy = 30.0  # goal y position [m]
-        grid_size = 0.5  # potential grid size [m]
-        robot_radius = 5.0  # robot radius [m]
-
-        # ox = [15.0, 20.0, 25.0]  # obstacle x position list [m]
-        # oy = [25.0, 26.0, 25.0]  # obstacle y position list [m]
-        ox = [0] # obstacle x position list [m]
-        oy = [10]
-        if show_animation:
-            plt.grid(True)
-            plt.axis("equal")
-
-        # path generation
-        _, _ = potential_field_planning(
-            sx, sy, gx, gy, ox, oy, grid_size, robot_radius)
-
-        if show_animation:
-            plt.show()
+        path = potential_fun(start, goal, obs_, delta=0.02)
+        path = np.array(path[::-1])
 
     elif(planner_type == 4):
         sections = 4 
