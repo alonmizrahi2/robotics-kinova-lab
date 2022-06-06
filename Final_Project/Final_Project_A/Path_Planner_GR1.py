@@ -8,8 +8,8 @@ import sys, os
 # Import required packages
 from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
-from alon_poten_planner import *
-from str_lines_planner import *
+from poten_planner_GR1 import *
+from str_lines_planner_GR1 import *
 from car_control import Controller
 
 from aruco_module import aruco_track

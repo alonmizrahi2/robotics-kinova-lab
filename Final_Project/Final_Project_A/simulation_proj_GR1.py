@@ -1,6 +1,6 @@
 from ast import While
 from re import A
-from Path_Planner import *
+from Path_Planner_GR1 import *
 # from final_proj import *
 
 

@@ -6,7 +6,8 @@ from scipy.spatial.transform import Rotation as R
 import sys, os
 
 # Import required packages
-
+sys.path.insert(0, r'../common/Aruco_Tracker-master') ###?????
+sys.path.insert(0, r'../Lab5')
 from car_control import Controller
 
 from aruco_module import aruco_track
@@ -14,11 +15,7 @@ import cv2
 
 from ast import While
 from re import A
-from Path_Planner import *
-from final_proj import *
-
-sys.path.insert(0, r'../common/Aruco_Tracker-master')
-sys.path.insert(0, r'../Lab5')
+from Path_Planner_GR1 import *
 
 ####################
 #### main loop #####
