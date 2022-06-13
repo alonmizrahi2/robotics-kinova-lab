@@ -53,15 +53,15 @@ def strLines_fun(x_ee, x_goal, obs, delta=0.02):
             loc = loc + step*t
         else: # Case 4
             loc = loc + step*np.array([0, 0.2])
-        plt.scatter(loc[0], loc[1], color="k", s=5)
-        plt.pause(0.1)
-        plt.xlim([-0.1, 3])
-        plt.ylim([0, 2])
+        # plt.scatter(loc[0], loc[1], color="k", s=5)
+        # plt.pause(0.1)
+        # plt.xlim([-0.1, 3])
+        # plt.ylim([0, 2])
         path = np.append(path, [np.copy(loc)], axis = 0)
        
 
-    plot_path(path, x_goal,O)
-    print(path.shape)
+    # plot_path(path, x_goal,O)
+    # print(path.shape)
     return (path)
 
 

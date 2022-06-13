@@ -10,10 +10,10 @@ from rrt_algo_GR1 import *
 from rrt_star_algo_GR1 import *
 from poten_planner_GR1 import *
 from str_lines_planner_GR1 import *
-from car_control import Controller
+# from car_control import Controller
 
-from aruco_module import aruco_track
-import cv2
+# from aruco_module import aruco_track
+# import cv2
 
 def planner(Pc, Pg, O, planner_type , B=[-0.05, 0.65] , delta=0.02, **args): #B=[-0.05, 0.65]
     """
@@ -162,7 +162,7 @@ def close_to_disk(p_d,p_o,tol = 0.03):
         return True
 
 def GoToNextPoint(p_own,point, tolerance = 0.01):
-    
+    tracker = aruco_track()
     next_ = [10e2, 10e2]
     while np.linalg.norm(next_[:2]) > tolerance:
         
@@ -232,6 +232,7 @@ def field_status():
     Returns:
 
     '''
+    tracker = aruco_track()
     t_curr, R_curr, ids = tracker.track()
     try:
         t_curr, R_curr, ids = t_curr.squeeze(), R_curr.squeeze(), ids.squeeze()
