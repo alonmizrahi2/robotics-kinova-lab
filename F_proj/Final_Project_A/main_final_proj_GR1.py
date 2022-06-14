@@ -330,6 +330,8 @@ if __name__ == "__main__":
                 p_rival , p_own , p_disk = calc_xy_base_vector(p_rival_mat, p_own_mat, p_disk_mat) #xy vectors
                 if close_to_disk(p_disk, p_own, tol = 0.03)  is False:
                     to_goal = False
+                    if close_to_disk(p_disk, p_rival, tol = 0.02)  is False:
+                        break
                     GoToNextPoint(p_own, (p_own[0] - side*1,p_own[1]))
                     break
                 to_goal = False
